@@ -1,11 +1,14 @@
 {
   "name": "lambrini",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "",
   "type": "module",
   "main": "dist/index.js",
+  "files": ["dist/"],
   "scripts": {
-    "build": "rollup --config rollup.config.js",
+    "build:publish": "rm -rf dist && rollup --config rollup.config.js",
+    "build:dev": "rm -rf dist && rollup --config rollup.config.dev.js",
+    "prepublish": "pnpm test && pnpm build:publish",
     "test": "jest"
   },
   "keywords": [],

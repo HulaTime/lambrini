@@ -11,7 +11,7 @@ const config = {
   output: {
     dir: 'dist',
     format: 'es',
-    sourcemap: true,
+    // sourcemap: true,
     // externalImportAttributes: true, 
   },
   external: ['fastify'],
