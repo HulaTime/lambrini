@@ -13,8 +13,14 @@ const AwsTransformerPlugin = (fastify: FastifyInstance, options: FastifyPluginOp
       eventHeaders[key] = Array.isArray(value) ? stringArrToString(value) : value;
     });
 
+    let eventBody: string | null = null;
+    if (headers['content-type'] === 'application/json') {
+      eventBody = JSON.stringify(body);
+    }
+
     req.lambdaEvent = {
       headers: eventHeaders,
+      body: eventBody,
     }
   });
 };
