@@ -1,4 +1,4 @@
-import Fastify from 'fastify';
+import Fastify, { FastifyInstance } from 'fastify';
 import Lambrini from '../Lambrini';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
@@ -31,25 +31,63 @@ describe('Lambrini', () => {
     expect(registeredFn).toHaveBeenCalled();
   });
 
-  test('A handler function that is registered to an endpoint should have a correctly mapped event passed in', (done) => {
-    const fastify = Fastify();
-    const lambrini = new Lambrini({ serverInstance: fastify });
-    const registeredFn = async (event: Partial<APIGatewayProxyEvent>): Promise<APIGatewayProxyResult> => {
-      try {
-        expect(event).toEqual({
-          headers: {
-            host: "localhost:80",
-            "user-agent": "lightMyRequest",
-          }
-        })
-        done();
-        return { statusCode: 200, body: '' };
-      } catch (err) {
-        done(err);
-        return { statusCode: 500, body: '' };
+  describe('Mapping the request to a proxy event', () => {
+    let fastify: FastifyInstance;
+    let lambrini: Lambrini;
+
+    beforeEach(() => {
+      fastify = Fastify();
+      lambrini = new Lambrini({ serverInstance: fastify });
+    });
+
+    test('Any headers supplied in the request should be mapped into the proxy event', (done) => {
+      const testHeaders = {
+        'authorization': 'Bearer daskfjalsjk',
+        tango: 'fandango',
       }
-    }
-    lambrini.register('get', '/foo', registeredFn);
-    fastify.inject({ method: 'get', url: '/foo' });
+      const fakeHandler = async (event: Partial<APIGatewayProxyEvent>): Promise<APIGatewayProxyResult> => {
+        try {
+          expect(event.headers).toMatchObject(testHeaders);
+          done();
+          return { statusCode: 200, body: '' };
+        } catch (err) {
+          done(err);
+          return { statusCode: 500, body: '' };
+        }
+      }
+      lambrini.register('get', '/foo', fakeHandler);
+      fastify.inject({ method: 'get', url: '/foo', headers: testHeaders });
+    });
+
+    test('The original http method should be mapped through', (done) => {
+      const fakeHandler = async (event: Partial<APIGatewayProxyEvent>): Promise<APIGatewayProxyResult> => {
+        try {
+          expect(event.httpMethod?.toLowerCase()).toEqual('get');
+          done();
+          return { statusCode: 200, body: '' };
+        } catch (err) {
+          done(err);
+          return { statusCode: 500, body: '' };
+        }
+      }
+      lambrini.register('get', '/foo', fakeHandler);
+      fastify.inject({ method: 'get', url: '/foo' });
+    });
+
+    test('A JSON body should be correctly mapped through', (done) => {
+      const testBody = { foo: 'bar', hello: { deep: 'world' } };
+      const fakeHandler = async (event: Partial<APIGatewayProxyEvent>): Promise<APIGatewayProxyResult> => {
+        try {
+          expect(event.body).toEqual(JSON.stringify(testBody));
+          done();
+          return { statusCode: 200, body: '' };
+        } catch (err) {
+          done(err);
+          return { statusCode: 500, body: '' };
+        }
+      }
+      lambrini.register('post', '/foo', fakeHandler);
+      fastify.inject({ method: 'post', url: '/foo', payload: testBody });
+    });
   });
 });

@@ -1,5 +1,6 @@
 import Fastify, { FastifyInstance, FastifyPluginOptions } from 'fastify';
-import AwsTransformerPlugin from './transformers/AwsTransformerPlugin';
+import AwsMapHeadersPlugin from './mappers/AwsMapHeadersPlugin';
+import AwsMapBodyPlugin from './mappers/AwsMapBodyPlugin';
 
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
@@ -20,7 +21,8 @@ export default class Lambrini {
   constructor(config?: LambriniConfig) {
     this.port = config?.port ?? 3000;
     this.serverInstance = config?.serverInstance ?? Fastify({ logger: true });
-    this.serverInstance.register(AwsTransformerPlugin);
+    this.serverInstance.register(AwsMapHeadersPlugin);
+    this.serverInstance.register(AwsMapBodyPlugin);
   }
 
   register(method: HttpMethod, endpoint: string, handler: ProxyLambdaHandler) {
