@@ -11,6 +11,9 @@ importers:
       fastify:
         specifier: ^4.28.1
         version: 4.28.1
+      fastify-plugin:
+        specifier: ^4.5.1
+        version: 4.5.1
     devDependencies:
       '@rollup/plugin-typescript':
         specifier: ^11.1.6
@@ -816,6 +819,9 @@ packages:
 
   fast-uri@2.4.0:
     resolution: {integrity: sha512-ypuAmmMKInk5q7XcepxlnUWDLWv4GFtaJqAzWKqn62IpQ3pejtr5dTVbt3vwqVaMKmkNR55sTT+CqUKIaT21BA==}
+
+  fastify-plugin@4.5.1:
+    resolution: {integrity: sha512-stRHYGeuqpEZTL1Ef0Ovr2ltazUT9g844X5z/zEBFLG8RYlpDiOCIG+ATvYEp+/zmc7sN29mcIMp8gvYplYPIQ==}
 
   fastify@4.28.1:
     resolution: {integrity: sha512-kFWUtpNr4i7t5vY2EJPCN2KgMVpuqfU4NjnJNCgiNB900oiDeYqaNDRcAfeBbOF5hGixixxcKnOU4KN9z6QncQ==}
@@ -2471,6 +2477,8 @@ snapshots:
   fast-redact@3.5.0: {}
 
   fast-uri@2.4.0: {}
+
+  fastify-plugin@4.5.1: {}
 
   fastify@4.28.1:
     dependencies:

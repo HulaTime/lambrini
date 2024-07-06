@@ -1,14 +1,16 @@
 import Fastify, { FastifyInstance, FastifyPluginOptions } from 'fastify';
+import AwsTransformerPlugin from './transformers/AwsTransformerPlugin';
+
 import type { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
-type LambriniConfig = {
+export type LambriniConfig = {
   serverInstance?: FastifyInstance;
   port?: number;
 };
 
 type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'delete';
 
-type ProxyLambdaHandler = (event: Partial<APIGatewayProxyEvent>) => Promise<APIGatewayProxyResult>
+export type ProxyLambdaHandler = (event: Partial<APIGatewayProxyEvent>) => Promise<APIGatewayProxyResult>
 
 export default class Lambrini {
   private serverInstance: FastifyInstance;
@@ -16,8 +18,9 @@ export default class Lambrini {
   private readonly port: number;
 
   constructor(config?: LambriniConfig) {
-    this.serverInstance = config?.serverInstance ?? Fastify({ logger: true });
     this.port = config?.port ?? 3000;
+    this.serverInstance = config?.serverInstance ?? Fastify({ logger: true });
+    this.serverInstance.register(AwsTransformerPlugin);
   }
 
   register(method: HttpMethod, endpoint: string, handler: ProxyLambdaHandler) {
