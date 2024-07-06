@@ -6,9 +6,9 @@ const config: Config = {
   coverageProvider: 'v8',
   preset: 'ts-jest',
   testMatch: [
-    '**/__tests__/**/*.[jt]s?(x)',
-    '**/__tests__/*.(spec|test).[jt]s?(x)',
-    '**/?(*.)+(spec|test).[tj]s?(x)',
+    '<rootDir>/src/**/__tests__/**/*.[jt]s?(x)',
+    '<rootDir>/src/**/__tests__/*.(spec|test).[jt]s?(x)',
+    '<rootDir>/src/**/?(*.)+(spec|test).[tj]s?(x)',
   ],
 
   testPathIgnorePatterns: [
