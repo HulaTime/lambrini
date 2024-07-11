@@ -1,6 +1,6 @@
 {
   "name": "lambrini",
-  "version": "0.0.1",
+  "version": "0.0.1-beta",
   "description": "",
   "type": "module",
   "main": "dist/index.js",
